@@ -17,7 +17,7 @@ exports.authorization = (req, res, next) => {
                     maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
                     httpOnly: true
                 });
-                req.user = { id: user._id };
+                req.user = user;
                 next();
             }
         });
@@ -35,7 +35,7 @@ exports.authorization = (req, res, next) => {
                         res.clearCookie("token").redirect("/");
                     } else {
                         // if user is found then bind user data to req.user and send user data
-                        req.user = decoded;
+                        req.user = user;
                         next();
                     }
                 });
