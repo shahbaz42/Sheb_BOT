@@ -88,16 +88,14 @@
         </div>
 
         <div class="chat_response">
-            <form action="/" method="post">
-                <span>
-                    <input class="form-control msg_box " type="text" name="reply" />
-                </span>
-                <span>
-                    <input class="btn btn-outline-dark send_btn" type="submit" value="Send Reply" />
-                </span>
-            </form>
+            <span>
+                <input class="form-control msg_box " type="text" name="reply" autofocus/>
+            </span>
+            <span>
+                <input class="btn btn-outline-dark send_btn" type="submit" onclick="send_reply()" value="Send Reply" />
+            </span>
         </div>
-
+        
     </div>
 
 
@@ -112,9 +110,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
+        // code for sending message with enter
+        const msg_box = document.querySelector('.msg_box');
+        msg_box.addEventListener('keyup', function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                send_reply();
+                msg_box.value = '';
+            }
+        });
+
+
+        function send_reply(){
+            try{
+                const reply = document.querySelector('input[name="reply"]').value;
+                var elem = document.getElementById('chat_messages');
+                document.querySelector('#chat_messages').innerHTML += `<p>You: ${reply}</p>`
+                
+                const url = '/';
+                const data = {
+                    reply: reply
+                };
+
+                axios.post(url, data)
+                .then(function (response) {
+                    console.log(response);
+                    document.querySelector('input[name="reply"]').value = '';
+                    document.querySelector('#chat_messages').innerHTML = `<p>${response.data.message}</p>`;
+                    elem.scrollTop = elem.scrollHeight;
+                })
+
+                elem.scrollTop = elem.scrollHeight;
+
+            } catch(e){
+                console.log(e);
+            }
+        }
+
         var elem = document.getElementById('chat_messages');
         elem.scrollTop = elem.scrollHeight;
+
     </script>
 </body>
 

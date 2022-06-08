@@ -1,7 +1,6 @@
 const express = require("express");
-const { Configuration, OpenAIApi } = require("openai");
 const morgan = require("morgan");
-
+const { Configuration, OpenAIApi } = require("openai");
 require("dotenv").config();
 require("./api/config/DB").connect();
 
@@ -18,26 +17,31 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", async (req, res) => {
-    const configuration = new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-    const openai = new OpenAIApi(configuration);
+    try {
+        const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY});
+        const openai = new OpenAIApi(configuration);
+    
+        let reply = req.body.reply;
+        message += "<br>You: " + reply + "<br>Elon Musk : ";
 
-    let reply = req.body.reply;
-    message += "<br>You: " + reply + "<br>Elon Musk : ";
+        const response = await openai.createCompletion("text-davinci-002", {
+            prompt: message,
+            temperature: 0.9,
+            max_tokens: 150,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0.6,
+            stop: ["You :", "Elon Musk :"],
+        });
 
-    const response = await openai.createCompletion("text-davinci-002", {
-        prompt: message,
-        temperature: 0.9,
-        max_tokens: 150,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0.6,
-        stop: ["You :", "Elon Musk :"],
-    });
+        message += response.data.choices[0].text + "<br>";
 
-    message += response.data.choices[0].text + "<br>";
-    res.render("index", { message });
+        res.json({message: message});
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error." });
+    }
 });
 
 
