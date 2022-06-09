@@ -76,24 +76,9 @@
 <body>
     <div class="chat_container">
 
-        <div class="chat_header">
-            <h2>🤖 Shah_BOT </h2>
-        </div>
-        <br>
-
-        <div id="chat_messages" class="chat_messages">
-            <p>
-                <%- message %>
-            </p>
-        </div>
-
-        <div class="chat_response">
-            <span>
-                <input class="form-control msg_box " type="text" name="reply" autofocus/>
-            </span>
-            <span>
-                <input class="btn btn-outline-dark send_btn" type="submit" onclick="send_reply()" value="Send Reply" />
-            </span>
+        <div>
+            <a href="/elon_musk"> Elon Musk</a>
+            <a href="/jeff_bezos"> Jeff Bezos</a>
         </div>
         
     </div>
@@ -112,48 +97,6 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script>
-        // code for sending message with enter
-        const msg_box = document.querySelector('.msg_box');
-        msg_box.addEventListener('keyup', function (event) {
-            if (event.keyCode === 13) {
-                event.preventDefault();
-                send_reply();
-                msg_box.value = '';
-            }
-        });
-
-
-        function send_reply(){
-            try{
-                const reply = document.querySelector('input[name="reply"]').value;
-                var elem = document.getElementById('chat_messages');
-                document.querySelector('#chat_messages').innerHTML += `<p>You: ${reply}</p>`
-                
-                const url = '/';
-                const data = {
-                    reply: reply
-                };
-
-                axios.post(url, data)
-                .then(function (response) {
-                    console.log(response);
-                    document.querySelector('input[name="reply"]').value = '';
-                    document.querySelector('#chat_messages').innerHTML = `<p>${response.data.message}</p>`;
-                    elem.scrollTop = elem.scrollHeight;
-                })
-
-                elem.scrollTop = elem.scrollHeight;
-
-            } catch(e){
-                console.log(e);
-            }
-        }
-
-        var elem = document.getElementById('chat_messages');
-        elem.scrollTop = elem.scrollHeight;
-
-    </script>
 </body>
 
 </html>
