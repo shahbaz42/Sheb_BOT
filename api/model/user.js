@@ -8,7 +8,10 @@ const userSchema = new mongoose.Schema({
         default: random_animal_name
     },
     conversation: [
-        {
+        {   
+            chat_name: {
+                type: String,
+            },
             name: {
                 type: String,
             },
