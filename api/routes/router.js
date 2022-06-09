@@ -6,7 +6,14 @@ const Conversation = require("../model/conversation");
 const {init_conversation} = require("../controllers/conversation_controller");
 
 router.get("/", authorization, (req, res) => {
-    res.render("index");
+    Conversation.find({}, (err, conversations) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ message: "Internal Server Error" });
+        } else {
+            res.render("index", { conversations });
+        }
+    });
 })
 
 router.get("/chat/:chat_name", authorization, init_conversation, (req, res) => {
