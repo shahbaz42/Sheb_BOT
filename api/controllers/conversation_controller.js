@@ -26,6 +26,7 @@ exports.init_conversation = async (req, res, next) => {
             if (conversation_template != null) {
                 // conversation template has been found
                 conversation.push(conversation_template);
+                req.conversation_index = conversation.length - 1;
                 await req.user.save();
                 next();
             } else {
