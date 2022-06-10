@@ -1,5 +1,22 @@
 const Conversation = require("../model/conversation");
 
+////////////////testing controller for req.user
+//// remove in production
+exports.get_req_user = (req, res) => {
+    res.send(req.user);
+};
+
+exports.index_page_controller = async(req, res) => {
+    Conversation.find({}, (err, conversations) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ message: "Internal Server Error" });
+        } else {
+            res.render("index", { conversations });
+        }
+    });
+}
+
 exports.init_conversation = async (req, res, next) => {
     // This middleware checks if the chat is already present
     // If not, it creates a new chat from the template

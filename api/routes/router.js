@@ -4,17 +4,15 @@ const { Configuration, OpenAIApi } = require("openai");
 const { authorization } = require("../routes/auth_routes");
 const Conversation = require("../model/conversation");
 const {init_conversation} = require("../controllers/conversation_controller");
+const {index_page_controller, get_req_user} = require("../controllers/conversation_controller");
 
-router.get("/", authorization, (req, res) => {
-    Conversation.find({}, (err, conversations) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ message: "Internal Server Error" });
-        } else {
-            res.render("index", { conversations });
-        }
-    });
-})
+///////////////////////
+// testing route for getting req. user
+// remove in production
+
+router.get("/test/req_user", authorization, get_req_user); 
+
+router.get("/", authorization, index_page_controller );
 
 router.get("/chat/:chat_name", authorization, init_conversation, (req, res) => {
     const message = req.user.conversation[req.conversation_index].message;
