@@ -1,5 +1,6 @@
 const Conversation = require("../model/conversation");
 const { Configuration, OpenAIApi } = require("openai");
+const { generate_chat_template } = require("../utils/chat_template_generator");
 
 ////////////////testing controller for req.user
 //// remove in production
@@ -103,7 +104,21 @@ exports.init_conversation = async (req, res, next) => {
             } else {
                 // conversation template has not been found
                 // to do: create a new conversation default template
-                res.json({ message: "conversation template has not been found" });
+
+                const generated_template = await generate_chat_template(chat_name);
+
+                const new_conversation = {
+                    chat_name : chat_name,
+                    name: chat_name,
+                    message: generated_template
+                }
+
+                conversation.push(new_conversation);
+                req.conversation_index = conversation.length - 1;
+                await req.user.save();
+                next();
+
+                // res.json({ message: "conversation template has not been found" });
             }
         } catch (error) {
             // error in fetching conversation template
